@@ -4,7 +4,7 @@
 
 **Imitate first. Reinforce second. Keep the weights open.**
 
-Minimal, reproducible lab for the first rung of [Hugging Face–style Training Agents](https://www.youtube.com/watch?v=rNgUoH7Wbv8):
+Minimal, reproducible lab for the first rung of agent post-training (SFT on traces), inspired by [Ben Burtenshaw](https://x.com/ben_burtenshaw/status/2067615361428545566?s=20) and the [HF Training Agents live tutorial](https://www.youtube.com/watch?v=rNgUoH7Wbv8):
 
 1. Load **agent traces** (multi-turn tool sessions)  
 2. Convert to **prompt / completion** rows  
@@ -221,6 +221,11 @@ Base models have their own licenses (check the Hugging Face model card).
 
 ---
 
-## Acknowledgments
+## Acknowledgments / inspired by
 
-Inspired by the Hugging Face **Training Agents** SFT-on-traces workflow and the broader “vibe fine-tuning” idea: agent harness builds the loop; you own the open-weights student.
+This lab was inspired by:
+
+- Ben Burtenshaw — [Vibe reinforcement fine-tuning thread](https://x.com/ben_burtenshaw/status/2067615361428545566?s=20)  
+- Hugging Face **Training Agents** (Session 1) — [live tutorial: SFT on coding-agent traces](https://www.youtube.com/watch?v=rNgUoH7Wbv8)
+
+The idea: agent harness builds the loop; you start with SFT on traces (completion-only loss), then move toward RFT; you own the **open-weights** student.

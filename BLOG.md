@@ -13,7 +13,7 @@
 3. You inspect loss, traces, and sample generations.
 4. You refine and go again.
 
-Under the hood the *technical* ladder is the same one Hugging Face’s Training Agents series pushes:
+Under the hood the *technical* ladder matches the spirit of [Ben Burtenshaw’s vibe reinforcement fine-tuning notes](https://x.com/ben_burtenshaw/status/2067615361428545566?s=20) and Hugging Face’s [Training Agents SFT session](https://www.youtube.com/watch?v=rNgUoH7Wbv8):
 
 | Stage | What it is | What it teaches |
 |-------|------------|-----------------|
