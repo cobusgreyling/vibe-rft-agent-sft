@@ -1,19 +1,21 @@
-# Vibe Reinforcement Fine-Tuning
+# Agentic Supervised Fine-Tuning
 
-**SFT on agent traces first. Rewards later. Small open-weights models. An AI agent as your co-pilot.**
+**SFT on agent traces. Small open-weights models. Optional reinforcement later.**
 
 ---
 
 ## The short version
 
-**Vibe Reinforcement Fine-Tuning** is not a brand-new math formula. It is a *way of working*:
+**Agentic Supervised Fine-Tuning** is supervised fine-tuning aimed at *agent behavior*: multi-turn tool sessions, format-correct tool calls, and small open-weights students you can own.
 
-1. You describe what you want in plain language to an **AI agent harness** (Grok CLI, Cursor, Claude Code, etc.).
-2. The agent writes data scripts, training configs, eval checks, and debugs the run.
+You can build the pipeline by hand or with an **AI coding harness** (Grok CLI, Cursor, Claude Code, etc.):
+
+1. You describe the training goal in plain language.
+2. Scripts convert traces, train LoRA, and run format checks.
 3. You inspect loss, traces, and sample generations.
-4. You refine and go again.
+4. You refine data and configs and go again.
 
-Under the hood the *technical* ladder matches the spirit of [Ben Burtenshaw’s vibe reinforcement fine-tuning notes](https://x.com/ben_burtenshaw/status/2067615361428545566?s=20) and Hugging Face’s [Training Agents SFT session](https://www.youtube.com/watch?v=rNgUoH7Wbv8):
+The *technical* ladder matches the spirit of [Ben Burtenshaw’s agent post-training notes](https://x.com/ben_burtenshaw/status/2067615361428545566?s=20) and Hugging Face’s [Training Agents SFT session](https://www.youtube.com/watch?v=rNgUoH7Wbv8):
 
 | Stage | What it is | What it teaches |
 |-------|------------|-----------------|
@@ -93,21 +95,20 @@ A chat API that only returns text is not enough.
 
 **Nuance so we stay accurate:** LoRA is not magically limited to “open source.” It is limited to **models whose weights you can load.** In practice that is almost always **open weights** (or private weights you already have).
 
-**One line:** LoRA needs the model’s numbers on disk or GPU; an API that only returns text is not enough. That is why this whole vibe RFT story is built around an **open-weights student**.
+**One line:** LoRA needs the model’s numbers on disk or GPU; an API that only returns text is not enough. That is why this whole agentic SFT story is built around an **open-weights student**.
 
 ---
 
-## What “vibe” has to do with it
+## Why “agentic” SFT?
 
-Classic fine-tuning blogs assume *you* hand-write every script. **Vibe** means the **agent harness** is in the loop:
+This is SFT on **agent traces**—not generic chat pairs. The training target is multi-turn tool-using behavior. You can also use an **agent harness** to build and iterate the pipeline itself:
 
 ```
   you (intent in English)
            │
            v
   ┌─────────────────────┐
-  │  AI agent harness   │  ← Grok CLI / coding agent
-  │  (the "vibe" part)  │
+  │  AI coding harness  │  ← Grok CLI / Cursor / etc. (optional)
   └─────────┬───────────┘
             │ writes / runs / fixes
             v
@@ -119,10 +120,12 @@ Classic fine-tuning blogs assume *you* hand-write every script. **Vibe** means t
 
 So:
 
-- **Vibe** = *how* the pipeline gets built and iterated (agent-assisted).
-- **SFT / RFT** = *what* learning algorithm you run.
+- **Agentic (data)** = traces from tool-using agents; student learns agent *format and habits*.
+- **Agentic (workflow)** = optional harness-assisted convert / train / eval loop.
+- **SFT** = the learning algorithm this repo actually runs (imitation).
+- **RFT / GRPO** = a later rung with rewards—not implemented here.
 
-Without the vibe loop you can still SFT by hand. With it, the barrier drops: the harness scaffolds convert/train/eval while you stay on the science and the product intent.
+You can still SFT entirely by hand. The barrier drops when a harness scaffolds convert/train/eval while you stay on data quality and product intent.
 
 ---
 
@@ -465,17 +468,17 @@ That is **success for a teaching baseline**, not a claim that 20 examples make a
 
 ---
 
-## How this becomes full “Vibe RFT”
+## After SFT: optional reinforcement
 
 ```
-  VIBE LOOP (always on)
+  BUILD LOOP (always on)
   ─────────────────────
-  intent → agent harness writes code → run → you read → refine
+  intent → scripts / harness → run → you read → refine
 
   LEARNING LADDER
   ───────────────
-  Stage A  SFT on traces     ← imitation / behavior distillation
-  Stage B  GRPO / RFT        ← reward in the loop, beyond cloning
+  Stage A  SFT on traces     ← imitation / behavior distillation  (this repo)
+  Stage B  GRPO / RFT        ← reward in the loop, beyond cloning  (not here yet)
 ```
 
 | Stage | Question the model answers |
@@ -484,7 +487,7 @@ That is **success for a teaching baseline**, not a claim that 20 examples make a
 | RFT | “What gets a high reward in *my* environment?” |
 
 SFT teaches **manners and format**.  
-RFT raises the **ceiling** when imitation is not enough.
+RFT raises the **ceiling** when imitation is not enough. This repository implements **Stage A only**.
 
 ---
 
@@ -511,17 +514,17 @@ RFT raises the **ceiling** when imitation is not enough.
   outputs/lora-sft/                       your small adapter
 ```
 
-**4. Vibe**
+**4. Agentic workflow (optional)**
 
 ```
-  Human intent ⇄ Agent harness ⇄ Train/eval scripts ⇄ Metrics
+  Human intent ⇄ Coding harness ⇄ Train/eval scripts ⇄ Metrics
 ```
 
 ---
 
 ## Takeaways
 
-1. **Vibe RFT** = agentic workflow + SFT-then-reinforcement ladder on **small open-weights** models.  
+1. **Agentic SFT** = supervised fine-tuning on **agent traces** with **small open-weights** students.  
 2. **Open weights** ≠ **open source**; we fine-tune models whose **weights we can download**.  
 3. **LoRA** needs loadable weights—**DIY adapters are not something you bolt onto a closed chat API.**  
 4. Teacher traces + student SFT = **behavior distillation**.  
@@ -529,16 +532,16 @@ RFT raises the **ceiling** when imitation is not enough.
 6. **Mask the prompt (all of it for loss); grade the completion (all of it).**  
 7. **Hold out** data only to measure—do not train on it.  
 8. The “fine-tune file” is usually a **LoRA adapter sitting on** a frozen/quantized base.  
-9. The **vibe** part is the harness that builds and iterates this pipeline with you.
+9. A coding **harness** can scaffold convert/train/eval; you still own data quality and metrics.
 
 ---
 
 ## What to do next
 
-- Run the minimal lab: `demos/sft-agent-traces/` (Colab T4 notebook included).  
+- Run this repo’s minimal lab (Colab T4 notebook included).  
 - Replace synthetic traces with **real teacher** agent logs when you care about distillation quality.  
 - Scale data before you scale claims.  
-- Then add **RFT / GRPO** with a reward you believe in (tests green, format valid, task success).
+- Later, if imitation is not enough, add **RFT / GRPO** with a reward you believe in (tests green, format valid, task success).
 
 ---
 
@@ -546,10 +549,10 @@ RFT raises the **ceiling** when imitation is not enough.
 
 Fine-tuning an open-weights model on agent traces is not mysterious: **show it good sessions, grade only the assistant’s lines, save a small adapter, measure on hold-out and with format checks.**  
 
-The “vibe” is that you do not have to be a full-time ML engineer to drive the loop—an AI agent harness can carry the scaffolding while you stay responsible for the intent, the data quality, and whether the metrics actually mean anything.
+You do not have to be a full-time ML engineer to drive the loop—scripts (and optionally an AI coding harness) carry the scaffolding while you stay responsible for intent, data quality, and whether the metrics mean anything.
 
-**Imitate first. Reinforce second. Keep the weights open enough that you own the student.**
+**Imitate good agent traces. Keep the weights open enough that you own the student.**
 
 ---
 
-*Companion code: `demos/sft-agent-traces/` — convert → LoRA SFT → format eval → chat with simulated tools.*
+*Companion code: this repository — convert → LoRA SFT → format eval → chat with simulated tools.*

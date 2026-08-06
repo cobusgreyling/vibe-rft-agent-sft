@@ -1,4 +1,4 @@
-# Vibe RFT — SFT on agent traces
+# Agentic Supervised Fine-Tuning — SFT on agent traces
 # Free Colab T4: QLoRA (bitsandbytes) + LoRA (peft) + TRL SFTTrainer
 #
 #   pip install -r requirements.txt

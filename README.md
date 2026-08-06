@@ -1,10 +1,10 @@
-# Vibe Reinforcement Fine-Tuning — SFT on Agent Traces
+# Agentic Supervised Fine-Tuning
 
 ![Header: teacher brain streaming into a small student cube with a LoRA adapter](assets/header.jpg)
 
-**Imitate first. Reinforce second. Keep the weights open.**
+**Imitate good agent traces. Mask the prompt. Keep the weights open.**
 
-Minimal, reproducible lab for the first rung of agent post-training (SFT on traces), inspired by [Ben Burtenshaw](https://x.com/ben_burtenshaw/status/2067615361428545566?s=20) and the [HF Training Agents live tutorial](https://www.youtube.com/watch?v=rNgUoH7Wbv8):
+Minimal, reproducible lab for **supervised fine-tuning (SFT) on agent traces**—the practical first step of agent post-training—inspired by [Ben Burtenshaw](https://x.com/ben_burtenshaw/status/2067615361428545566?s=20) and the [HF Training Agents live tutorial](https://www.youtube.com/watch?v=rNgUoH7Wbv8):
 
 1. Load **agent traces** (multi-turn tool sessions)  
 2. Convert to **prompt / completion** rows  
@@ -19,7 +19,7 @@ Designed for a **free Google Colab T4**. No mystery steps—clone, open the note
 | **Default student** | [`Qwen/Qwen2.5-1.5B-Instruct`](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct) (open weights) |
 | **Method** | TRL `SFTTrainer` + PEFT LoRA + 4-bit QLoRA |
 | **Data in repo** | 12 synthetic traces → 24 prompt–completion examples |
-| **Article** | [`BLOG.md`](BLOG.md) — vibe RFT, distillation, masking, open weights vs open source |
+| **Article** | [`BLOG.md`](BLOG.md) — agentic SFT, distillation, masking, open weights vs open source |
 
 ---
 
@@ -27,7 +27,7 @@ Designed for a **free Google Colab T4**. No mystery steps—clone, open the note
 
 1. Open the notebook in Colab:
 
-   **[Open `colab_sft_agent_traces.ipynb` in Colab](https://colab.research.google.com/github/cobusgreyling/vibe-rft-agent-sft/blob/main/colab_sft_agent_traces.ipynb)**
+   **[Open `colab_sft_agent_traces.ipynb` in Colab](https://colab.research.google.com/github/cobusgreyling/agentic-supervised-fine-tuning/blob/main/colab_sft_agent_traces.ipynb)**
 
    Or: upload `colab_sft_agent_traces.ipynb` from this repo → Colab.
 
@@ -50,7 +50,7 @@ Designed for a **free Google Colab T4**. No mystery steps—clone, open the note
 
 | Idea | In one line |
 |------|-------------|
-| **Vibe RFT** | Agent harness builds/runs the pipeline; you steer intent and read metrics |
+| **Agentic SFT** | Train a small open-weights student to imitate multi-turn tool-using agent behavior |
 | **Open weights** | You can download the student parameters and attach LoRA (not a closed chat API) |
 | **Behavior distillation** | Teacher traces → small student imitates tool format & multi-turn habits |
 | **Completion-only loss** | Model *reads* the prompt; loss only on assistant completions |
@@ -71,7 +71,7 @@ Designed for a **free Google Colab T4**. No mystery steps—clone, open the note
 ## Repo layout
 
 ```
-vibe-rft-agent-sft/
+agentic-supervised-fine-tuning/
 ├── assets/header.jpg              # README hero
 ├── colab_sft_agent_traces.ipynb   # ★ working end-to-end Colab notebook
 ├── BLOG.md                        # long-form explanation
@@ -94,8 +94,8 @@ vibe-rft-agent-sft/
 ## Local path (GPU recommended for train)
 
 ```bash
-git clone https://github.com/cobusgreyling/vibe-rft-agent-sft.git
-cd vibe-rft-agent-sft
+git clone https://github.com/cobusgreyling/agentic-supervised-fine-tuning.git
+cd agentic-supervised-fine-tuning
 
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
@@ -206,7 +206,7 @@ Real agent SFT usually uses hundreds to tens of thousands of trajectories. This 
 
 ## Related reading
 
-- [`BLOG.md`](BLOG.md) — Vibe Reinforcement Fine-Tuning (full write-up)  
+- [`BLOG.md`](BLOG.md) — Agentic Supervised Fine-Tuning (full write-up)  
 - [TRL SFTTrainer — completion-only loss](https://huggingface.co/docs/trl/en/sft_trainer#train-on-completion-only)  
 - [TRL dataset formats](https://huggingface.co/docs/trl/en/dataset_formats)  
 - HF Training Agents (Session 1) — SFT on coding-agent traces  
@@ -225,7 +225,7 @@ Base models have their own licenses (check the Hugging Face model card).
 
 This lab was inspired by:
 
-- Ben Burtenshaw — [Vibe reinforcement fine-tuning thread](https://x.com/ben_burtenshaw/status/2067615361428545566?s=20)  
+- Ben Burtenshaw — [agent post-training / vibe reinforcement fine-tuning thread](https://x.com/ben_burtenshaw/status/2067615361428545566?s=20)  
 - Hugging Face **Training Agents** (Session 1) — [live tutorial: SFT on coding-agent traces](https://www.youtube.com/watch?v=rNgUoH7Wbv8)
 
-The idea: agent harness builds the loop; you start with SFT on traces (completion-only loss), then move toward RFT; you own the **open-weights** student.
+The idea: start with **SFT on agent traces** (completion-only loss) so a small open-weights student learns tool format and multi-turn habits; optional reinforcement-style steps come later when imitation is not enough.
